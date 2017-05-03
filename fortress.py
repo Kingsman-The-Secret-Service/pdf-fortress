@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import glob, os, sys
 import time
 
@@ -16,9 +17,9 @@ class Util:
 	        decimals    - Optional  : positive number of decimals in percent complete (Int)
 	        bar_length  - Optional  : character length of bar (Int)
 	    """
-	    str_format = "{0:." + str(decimals) + "f}"
-	    percents = str_format.format(100 * (iteration / float(total)))
-	    filled_length = int(round(bar_length * iteration / float(total)))
+	    str_format = "{0:." + str(decimals) + "f}"  #{0:.1f}
+	    percents = str_format.format(100 * (iteration / float(total)))  #{0:.1f}.format(100*(i/float(l))
+	    filled_length = int(round(bar_length * iteration / float(total))) 
 	    bar = '*' * filled_length + '-' * (bar_length - filled_length)
 
 	    sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),
@@ -57,7 +58,7 @@ class Fortress:
 		for file in self._files:
 
 			# Decrypting the pdf file
-			cmd = "pdftk '" + file + "' output '" + self._action + "/" + file + "' user_pw " + self._password 
+			cmd = "pdftk '" + file + "' output '" + self._action + "/" + file + "' user_pw " + self._password #pdftk 'filename' output 'encrypt/filename' user_pwd password
 			os.system(cmd)
 
 			# Progress bar
@@ -91,13 +92,17 @@ class Fortress:
 	def fetchFiles(self):
 
 		# Changing the working directory
-		os.chdir(self._dirPath)
-
+		try:
+			os.chdir(self._dirPath)  #changes directory to the specified path. if directory is not mentioned , this will throw an error
+			print "directory successfully changed to ", self._dirPath
+		except OSError:
+			print "Please enter only a valid directory with absolute or relative path"
+			exit()
 		# Iterating over *.pdf extension files using glob
-		for file in glob.glob("*.pdf"):
+		for file in glob.glob("*.pdf"):   #to match and collect all the .pdf files"
 
 			# Appending glob files into list
-		    self._files.append(file)
+		    self._files.append(file) #the files with filename is added to the list file[]
 
 	def setupDir(self):
 
@@ -111,6 +116,8 @@ class Fortress:
 
 # Sample usage below
 # Fortress("encrypt|decrypt", "path/to/folder", "password")
-
-# Fortress("encrypt", "./sample/decrypt/", '123123')
+action = raw_input("Enter the action to be done\n'encrypt' for encryption\n'decrypt' for decryption:")
+path = raw_input("Enter the absolute/relative path of directory in which the pdf files exists:")
+password = raw_input("Enter the password:")
+Fortress(action, path, password)
 # Fortress("decrypt", "./sample", "12345")
