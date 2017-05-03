@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import glob, os, sys
-import time
+import time, getpass
 
 class Util:
 
@@ -118,6 +118,6 @@ class Fortress:
 # Fortress("encrypt|decrypt", "path/to/folder", "password")
 action = raw_input("Enter the action to be done\n'encrypt' for encryption\n'decrypt' for decryption:")
 path = raw_input("Enter the absolute/relative path of directory in which the pdf files exists:")
-password = raw_input("Enter the password:")
+password = getpass.getpass()
 Fortress(action, path, password)
 # Fortress("decrypt", "./sample", "12345")
