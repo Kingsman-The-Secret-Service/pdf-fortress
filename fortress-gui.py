@@ -21,8 +21,8 @@ except AttributeError:
 
 class Ui_MainWindow(object):
 
-    width = 600
-    height = 300
+    width = 900
+    height = 500
 
     def setupUi(self, MainWindow):
         # Main Window
@@ -60,7 +60,7 @@ class Ui_MainWindow(object):
 
         # Grid Layout Widget
         self.gridLayoutWidget = QWidget(self.centralwidget)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(5, 5, 590, 270))
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(5, 5, 890, 470))
         self.gridLayoutWidget.setObjectName(_fromUtf8("gridLayoutWidget"))
 
         # Grid Layout
@@ -182,16 +182,44 @@ class Ui_MainWindow(object):
 
     # FILE ARENA
     def fileList(self):
+
+        # Tree View Widget
+        self.treeView = QTreeView()
+        self.treeView.setMaximumSize(QSize(700, 16777215))
+        self.treeView.setGeometry(QRect(10, 10, 400, self.height))
+        self.treeView.setObjectName("treeView")
+        self.treeView.setSortingEnabled(True)
+        self.treeView.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.treeView.setExpandsOnDoubleClick(True)
+        self.treeView.setAnimated(True)
+        self.treeView.setWordWrap(True)
+        self.treeView.setContextMenuPolicy(Qt.CustomContextMenu)
+        # self.treeView.customContextMenuRequested.connect(self.treeContextMenu)
+
+        self.horizontalLayout.addWidget(self.treeView)
+
         # List View Widget
-        self.list = QListView(self.gridLayoutWidget)
-        self.list.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.list.setSelectionMode(QAbstractItemView.NoSelection)
-        self.horizontalLayout.addWidget(self.list)
+        # self.list = QListView(self.gridLayoutWidget)
+        # self.list.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        # self.list.setSelectionMode(QAbstractItemView.NoSelection)
+        # self.horizontalLayout.addWidget(self.list)
         # Standard Model
-        self.model = QStandardItemModel()
-        self.list.setModel(self.model)
-        self.files = []
-        self.model.itemChanged.connect(self.fileListSignals)
+        # self.model = QStandardItemModel()
+        # self.treeView.setModel(self.model)
+        # self.files = []
+        # self.model.itemChanged.connect(self.fileListSignals)
+
+
+        model = QFileSystemModel()
+        model.setReadOnly(True)
+        # model.setSorting(QDir.DirsFirst | QDir.IgnoreCase | QDir.Name)
+        # model.setFilter(QDir.Dirs)
+        model.setFilter(QDir.AllDirs | QDir.NoDotAndDotDot | QDir.AllEntries)
+        model.setFilter(QDir.NoDotAndDotDot)
+        model.setRootPath("/home/kavi/Desktop");
+
+        self.treeView.setModel(model)
+
 
     def fileListSignals(self):
         ''' updates the select all checkbox based on the listview '''
@@ -258,8 +286,10 @@ class Ui_MainWindow(object):
     def addFileSignal(self):
 
         dlg = QFileDialog()
-        dlg.setFileMode(QFileDialog.ExistingFiles)
-        dlg.setViewMode(QFileDialog.List)
+        # dlg.setFileMode(QFileDialog.ExistingFiles)
+        dlg.setFileMode(QFileDialog.Directory)
+
+        # dlg.setViewMode(QFileDialog.List)
         dlg.setNameFilter('PDF (*.pdf)')
 
         if dlg.exec_():
